@@ -52,3 +52,10 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# IntelliJ Rider
+.idea/
+
+# vi editors
+*.swp
+
