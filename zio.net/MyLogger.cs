@@ -4,30 +4,34 @@ namespace zio.net
 {
 	public sealed class MyLogger
 	{
-		private static Lazy<MyLogger> _INSTANCE;
+		private static Lazy<MyLogger> _instance;
 
-		private ILoggerFactory loggerFactory;
+		private ILoggerFactory _loggerFactory;
 
 		private MyLogger() {
-			loggerFactory = LoggerFactory.Create(builder => {
+			_loggerFactory = LoggerFactory.Create(builder => {
 				builder.AddFilter((category, level) => level >= LogLevel.Debug).AddConsole();
 			});
 		}
 
 		private MyLogger(ILoggerFactory loggerFactory) {
-			this.loggerFactory = loggerFactory;
+			_loggerFactory = loggerFactory;
+		}
+
+		public static void Config() {
+			_instance = new Lazy<MyLogger>(() => new MyLogger());
 		}
 
 		public static void Config(ILoggerFactory loggerFactory) {
-			_INSTANCE = new Lazy<MyLogger>(() => new MyLogger());
+			_instance = new Lazy<MyLogger>(() => new MyLogger(loggerFactory));
 		}
 
 		public static ILogger GetLogger(String name) {
-			return _INSTANCE.Value.loggerFactory.CreateLogger(name);
+			return _instance.Value._loggerFactory.CreateLogger(name);
 		}
 
 		public static void AddProvider(ILoggerProvider provider) {
-			_INSTANCE.Value.loggerFactory.AddProvider(provider);
+			_instance.Value._loggerFactory.AddProvider(provider);
 		}
 	}
 }

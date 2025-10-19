@@ -3,15 +3,15 @@ using zio.net;
 using Xunit.Abstractions;
 using Xunit.Extensions.Logging;
 
-namespace MyTest;
+namespace UnitTest;
 
-public class TcpEndpointTest
+public class TcpTerminalPortTest
 {
-	private readonly ITestOutputHelper output;
+	private readonly ITestOutputHelper _output;
 
-	public TcpEndpointTest(ITestOutputHelper output)
+	public TcpTerminalPortTest(ITestOutputHelper output)
 	{
-		this.output = output;
+		this._output = output;
 	}
 
 	[Fact]
@@ -22,17 +22,17 @@ public class TcpEndpointTest
 		//});
 		
 		
-		MyLogger.Config(null);
-		MyLogger.AddProvider(new XunitLoggerProvider(output, (msg, level) => true));
+		MyLogger.Config();
+		MyLogger.AddProvider(new XunitLoggerProvider(_output, (msg, level) => true));
 
 		var dport = new DebugPort();
-		var tcpPort = new TcpEndpoint(IPEndPoint.Parse("127.0.0.1:2323"));
+		var tcpPort = new TcpTerminalPort(IPEndPoint.Parse("127.0.0.1:2323"));
 		Link.Of(dport, tcpPort);
 		
 		tcpPort.BootAsync();
 		
-		Thread.Sleep(30000);
-		output.WriteLine("Test end");
+		Thread.Sleep(3000);
+		_output.WriteLine("Test end");
 		
 		
 		//

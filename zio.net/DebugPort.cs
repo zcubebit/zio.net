@@ -11,9 +11,19 @@ using Microsoft.Extensions.Logging;
 
 namespace zio.net
 {
-	public class DebugPort : Endpoint
+	public class DebugPort : TerminalPort
 	{
 		private Stream? _stream;
+
+		public override Task BootAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Shutdown()
+		{
+			throw new NotImplementedException();
+		}
 
 		public override Action<ReadOnlySequence<byte>> AsSink()
 		{
