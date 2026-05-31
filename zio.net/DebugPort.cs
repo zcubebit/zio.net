@@ -11,21 +11,12 @@ using Microsoft.Extensions.Logging;
 
 namespace zio.net
 {
-	public class DebugPort : TerminalPort
+	public class DebugPort : IPort
 	{
 		private Stream? _stream;
+		private Action<ReadOnlySequence<byte>>? _sinkTo;
 
-		public override Task BootAsync()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Shutdown()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override Action<ReadOnlySequence<byte>> AsSink()
+		public Action<ReadOnlySequence<byte>> AsSink()
 		{
 			return buf =>
 			{
@@ -34,6 +25,21 @@ namespace zio.net
 				String msg = EncodingExtensions.GetString(Encoding.UTF8, buf);
 				logger.LogInformation("LogPort {Description}.", msg);
 			};
+		}
+
+		public void Link(IPort to)
+		{
+			_sinkTo = to.AsSink();
+		}
+
+		protected void Sink(ReadOnlySequence<byte> buf)
+		{
+			_sinkTo?.Invoke(buf);
+		}
+
+		public void TestPeer(String msg)
+		{
+			Sink(new ReadOnlySequence<byte>(Encoding.ASCII.GetBytes(msg)));
 		}
 	}
 }

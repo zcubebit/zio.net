@@ -64,10 +64,7 @@ public class TcpTerminalPort(IPEndPoint endPoint) : TerminalPort
 		return buf =>
 		{
 			if (_client == null) throw new SocketException((int)SocketError.NotConnected);
-			while (!buf.IsEmpty)
-			{
-				_client!.GetStream().Write(buf.FirstSpan);
-			}
+			_client!.GetStream().Write(buf.FirstSpan);
 		};
 	}
 }
@@ -97,9 +94,9 @@ public class UdpTerminalPort(IPEndPoint endPoint) : TerminalPort
     public override async Task BootAsync()
     {
         _client = new UdpClient(endPoint);
-        var dgram = Encoding.UTF8.GetBytes("Hello nc");
-        _client!.Send(dgram, dgram.Length, new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2424));
-        CommAsync();
+        // var dgram = Encoding.UTF8.GetBytes("Hello nc");
+        // _client!.Send(dgram, dgram.Length, new IPEndPoint(IPAddress.Parse("127.0.0.1"), 2424));
+		CommAsync();
     }
 
     private async void CommAsync()
